@@ -1,0 +1,38 @@
+---
+// 文件说明：全站唯一布局组件（首页布局），提供顶栏、主内容区域与页脚，并设置 HTML 语言属性。
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import GlobalNetworkLoading from '../components/GlobalNetworkLoading';
+import Header from '../components/Header.astro';
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+// 计算当前页面语言，若无法获取则回退到默认语言
+const lang = Astro.currentLocale ?? defaultLang;
+// 获取当前语言的翻译函数
+const t = useTranslations(lang);
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<script>
+			import { preloadLottiePlayer } from '../scripts/preloadLottie';
+			void preloadLottiePlayer();
+		</script>
+		<Header />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+		<GlobalNetworkLoading client:load />
+	</body>
+</html>

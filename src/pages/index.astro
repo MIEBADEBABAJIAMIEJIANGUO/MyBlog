@@ -1,0 +1,18 @@
+---
+// 文件说明：网站首页（默认中文路由 /），嵌入智能助手。
+// 原代码注释：HomeHero 介绍页已替换为 AgentBlogShell
+import Layout from '../layouts/Layout.astro';
+import AgentBlogShell from '../components/AgentBlogShell.astro';
+import { agentLabels } from '../scripts/agent/labels';
+---
+
+<Layout title={agentLabels.title} description={agentLabels.pageDescription}>
+	<AgentBlogShell />
+</Layout>
+
+<!-- 原代码注释：HomeHero 首页
+import HomeHero from '../components/HomeHero.astro';
+<Layout title={t('site.title')} description={t('site.description')}>
+	<HomeHero />
+</Layout>
+-->

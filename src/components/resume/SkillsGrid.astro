@@ -1,0 +1,43 @@
+---
+// 文件说明：技能矩阵——按分组展示技术栈与掌握深度（主力 / 熟练 / 了解）。
+import type { Resume } from '../../data/resume';
+
+interface Props {
+	resume: Resume;
+}
+
+const { resume } = Astro.props;
+const levelLabel = resume.ui.skillHints;
+---
+
+<section class="rz-section" id="skills">
+	<div class="rz-shell">
+		<div class="rz-reveal">
+			<div class="rz-section-head">
+				<span class="rz-section-num">01</span>
+				<h2 class="rz-section-title">{resume.ui.sections.skills}</h2>
+				<span class="rz-section-sub">Skill Matrix</span>
+			</div>
+		</div>
+
+		<div class="rz-skills">
+			{
+				resume.skills.map((group, index) => (
+					<article class="rz-skill rz-reveal" style={`--rz-delay: ${index * 60}ms`}>
+						<h3 class="rz-skill-title">{group.title}</h3>
+						<p class="rz-skill-hint">{group.hint}</p>
+						<ul class="rz-skill-list">
+							{group.items.map((item) => (
+								<li class="rz-skill-item">
+									<span class="rz-skill-name">{item.name}</span>
+									<span class={`rz-level rz-level--${item.level}`}>{levelLabel[item.level]}</span>
+									{item.note && <span class="rz-skill-note">{item.note}</span>}
+								</li>
+							))}
+						</ul>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,90 @@
+---
+// 文件说明：简历首屏——姓名、定位、一句话简介、联系方式、操作按钮与关键数字面板。
+import type { Resume } from '../../data/resume';
+import ContactIcon from './ContactIcon.astro';
+
+interface Props {
+	resume: Resume;
+}
+
+const { resume } = Astro.props;
+const email = resume.contacts.find((c) => c.icon === 'mail')?.value ?? '';
+const ui = resume.ui;
+---
+
+<section class="rz-hero">
+	<div class="rz-shell">
+		<div class="rz-hero-grid">
+			<div class="rz-reveal">
+				<span class="rz-eyebrow">{resume.eyebrow}</span>
+				<h1 class="rz-name">
+					{resume.name}
+					<span class="rz-name-en">{resume.nameEn}</span>
+				</h1>
+				<p class="rz-role">{resume.role}</p>
+				<p class="rz-tagline">{resume.tagline}</p>
+
+				<ul class="rz-contacts">
+					{
+						resume.contacts.map((contact) => (
+							<li>
+								{contact.href ? (
+									<a class="rz-contact" href={contact.href}>
+										<ContactIcon icon={contact.icon} />
+										<span>{contact.value}</span>
+									</a>
+								) : (
+									<span class="rz-contact">
+										<ContactIcon icon={contact.icon} />
+										<span>{contact.value}</span>
+									</span>
+								)}
+							</li>
+						))
+					}
+				</ul>
+
+				<div class="rz-cta-row">
+					<button class="rz-btn rz-btn--primary" type="button" data-resume-print title={ui.printHint}>
+						<svg
+							viewBox="0 0 24 24"
+							width="15"
+							height="15"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
+							<path
+								d="M6 9V4h12v5M6 18H4v-6h16v6h-2M8 14h8v6H8z"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						{ui.print}
+					</button>
+					<a class="rz-btn" href="#projects">{ui.viewProjects}</a>
+					<button
+						class="rz-btn rz-btn--ghost"
+						type="button"
+						data-copy-email={email}
+						data-copied-label={ui.copied}
+					>
+						{ui.copyEmail}
+					</button>
+				</div>
+			</div>
+
+			<div class="rz-stats rz-reveal" style="--rz-delay: 140ms">
+				{
+					resume.stats.map((stat) => (
+						<div class="rz-stat">
+							<span class="rz-stat-value">{stat.value}</span>
+							<span class="rz-stat-label">{stat.label}</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>

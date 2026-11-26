@@ -1,0 +1,53 @@
+---
+// 文件说明：打印专用的项目详情块。屏幕上隐藏（.rz-print-only），打印时静态展开全部项目故事，
+// 版式刻意压缩（标签内联、要点单行），保证 A4 输出控制在 3–4 页。
+import type { Resume } from '../../data/resume';
+
+interface Props {
+	resume: Resume;
+}
+
+const { resume } = Astro.props;
+const labels = resume.ui.drawer;
+const sep = resume.lang === 'zh-CN' ? '；' : '; ';
+---
+
+<div class="rz-print-only rz-shell" aria-hidden="true">
+	<h2 class="rz-print-title">03 · {resume.ui.sections.projects}</h2>
+	{
+		resume.projects.map((project) => (
+			<article class="rz-project-print">
+				<h3 class="rz-project-print-name">
+					{project.name}
+					<span class="rz-project-print-meta">
+						{project.company} · {project.role} · {project.period}
+					</span>
+				</h3>
+				<p class="rz-project-print-tagline">{project.tagline}</p>
+				<p class="rz-pp-row">
+					<span class="rz-pp-label">{labels.background}</span>
+					{project.story.background}
+				</p>
+				<div class="rz-pp-row">
+					<span class="rz-pp-label">{labels.mine}</span>
+					<ul class="rz-pp-list">
+						{project.story.mine.map((item) => (
+							<li>{item}</li>
+						))}
+					</ul>
+				</div>
+				<p class="rz-pp-row">
+					<span class="rz-pp-label">{labels.challenges}</span>
+					{project.story.challenges.join(sep)}
+				</p>
+				<p class="rz-pp-row">
+					<span class="rz-pp-label">{labels.results}</span>
+					{project.story.results.join(sep)}
+				</p>
+				<p class="rz-project-print-stack">
+					{labels.stack}：{project.stack.join(' · ')}
+				</p>
+			</article>
+		))
+	}
+</div>

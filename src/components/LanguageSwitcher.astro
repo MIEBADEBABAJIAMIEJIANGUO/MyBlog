@@ -1,0 +1,57 @@
+---
+// 文件说明：语言切换器组件，用于在中文与英文之间切换，并保持当前所在页面路径不变。
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLang, languages } from '../i18n/ui';
+
+interface Props {
+	path?: string;
+}
+
+// 获取当前路径（已去除语言前缀），默认指向首页
+const { path = '/' } = Astro.props;
+// 计算当前语言，若无法获取则使用默认语言
+const current = Astro.currentLocale ?? defaultLang;
+
+// 生成语言切换链接列表：每种语言对应一个链接，当前语言标记为激活状态
+const links = Object.entries(languages).map(([code, label]) => ({
+	code,
+	label,
+	href: getRelativeLocaleUrl(code, path),
+	active: code === current,
+}));
+---
+
+<nav class="lang-switcher" aria-label="Language switcher">
+	{
+		links.map((link) => (
+			<a
+				href={link.href}
+				class:list={[{ active: link.active }]}
+				aria-current={link.active ? 'page' : undefined}
+			>
+				{link.label}
+			</a>
+		))
+	}
+</nav>
+<style>
+	.lang-switcher {
+		display: flex;
+		gap: 0.5em;
+	}
+	.lang-switcher a {
+		padding: 0.5em 0.75em;
+		color: var(--black);
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 6px;
+		text-decoration: none;
+	}
+	.lang-switcher a:hover {
+		border-color: var(--accent);
+	}
+	.lang-switcher a.active {
+		background: var(--accent);
+		color: white;
+		border-color: var(--accent);
+	}
+</style>

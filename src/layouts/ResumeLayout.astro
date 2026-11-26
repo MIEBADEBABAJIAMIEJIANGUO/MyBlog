@@ -1,0 +1,100 @@
+---
+// 文件说明：简历页专用布局——深色主题顶栏（品牌 / 语言切换 / 打印）、主内容区与页脚。
+// 不复用全站 Layout：全站顶栏与页脚是浅色的，会与简历页的深色主题冲突。
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import BaseHead from '../components/BaseHead.astro';
+import { getResume } from '../data/resume';
+import { defaultLang, languages } from '../i18n/ui';
+import '../styles/resume.css';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+const lang = Astro.currentLocale ?? defaultLang;
+const resume = getResume(lang);
+const ui = resume.ui;
+
+// 语言切换保持当前页面：/resume ↔ /en/resume
+const pathname = Astro.url.pathname;
+const pathWithoutLocale =
+	lang === 'en' && pathname.startsWith('/en') ? pathname.slice(3) || '/' : pathname;
+const langLinks = Object.entries(languages).map(([code, label]) => ({
+	code,
+	label,
+	href: getRelativeLocaleUrl(code, pathWithoutLocale),
+	active: code === lang,
+}));
+const homeHref = lang === 'en' ? '/en/' : '/';
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body class="rz-body">
+		<div class="rz-root">
+			<header class="rz-nav">
+				<div class="rz-shell rz-nav-inner">
+					<a class="rz-brand" href={homeHref}>
+						<span class="rz-brand-text">{ui.site}</span>
+					</a>
+					<div class="rz-nav-actions">
+						<nav class="rz-lang" aria-label="Language switcher">
+							{
+								langLinks.map((link) => (
+									<a
+										href={link.href}
+										class:list={[{ active: link.active }]}
+										aria-current={link.active ? 'page' : undefined}
+									>
+										{link.label}
+									</a>
+								))
+							}
+						</nav>
+						<button class="rz-btn rz-btn--ghost" type="button" data-resume-print title={ui.printHint}>
+							<svg
+								viewBox="0 0 24 24"
+								width="14"
+								height="14"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.8"
+								aria-hidden="true"
+							>
+								<path
+									d="M6 9V4h12v5M6 18H4v-6h16v6h-2M8 14h8v6H8z"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							<span>PDF</span>
+						</button>
+					</div>
+				</div>
+			</header>
+
+			<main class="rz-main">
+				<slot />
+			</main>
+
+			<footer class="rz-footer">
+				<div class="rz-shell rz-footer-inner">
+					<span>{resume.name} · {resume.role}</span>
+					<span>
+						<a href={homeHref}>{ui.back}</a>
+						· {ui.printHint}
+					</span>
+				</div>
+			</footer>
+		</div>
+
+		<script>
+			import '../scripts/resume';
+		</script>
+	</body>
+</html>

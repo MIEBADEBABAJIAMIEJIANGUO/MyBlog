@@ -1,0 +1,52 @@
+{
+  "name": "eccentric-event",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "dev:server": "nodemon",
+    "dev:all": "concurrently -n astro,server -c blue,green \"astro dev --background\" \"npm run dev:server\"",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "migrate:files": "node server/scripts/migrate-manifest-to-mongo.js",
+    "index:content": "node server/scripts/backfill-content-index.js"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.4",
+    "@lottiefiles/dotlottie-react": "^0.19.16",
+    "@mediapipe/tasks-vision": "^1.0.1",
+    "@napi-rs/canvas": "^1.0.8",
+    "@radix-ui/react-alert-dialog": "^1.1.23",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "astro": "^7.2.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mammoth": "^1.12.2",
+    "minio": "^8.0.6",
+    "mongodb": "^6.20.0",
+    "morgan": "^1.12.0",
+    "multer": "^2.3.0",
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^6.3.289",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sharp": "^0.35.0",
+    "tailwindcss": "^4.3.3",
+    "tesseract.js": "^7.0.0",
+    "three": "^0.185.1",
+    "word-extractor": "^1.0.4",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "nodemon": "^3.1.14"
+  }
+}

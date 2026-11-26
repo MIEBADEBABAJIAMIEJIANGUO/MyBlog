@@ -1,0 +1,40 @@
+---
+// 文件说明：钢铁侠姿态同步页面（英文路由 /en/ironman），承载实时上半身动作驱动 3D 模型体验。
+// 原代码注释：以下为占位版钢铁侠介绍页，已替换为完整姿态同步体验。
+/*
+import Layout from '../../layouts/Layout.astro';
+import IronManHero from '../../components/IronManHero.astro';
+import { defaultLang, useTranslations } from '../../i18n/ui';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+*/
+import Layout from '../../layouts/Layout.astro';
+import IronManExperience from '../../components/IronManExperience.astro';
+import { defaultLang, useTranslations } from '../../i18n/ui';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+---
+
+<Layout title={t('ironman.title')} description={t('ironman.intro')}>
+	<IronManExperience
+		labels={{
+			statusLoading: t('ironman.status.loading'),
+			statusTracking: t('ironman.status.tracking'),
+			statusNoPose: t('ironman.status.noPose'),
+			statusCameraDenied: t('ironman.status.cameraDenied'),
+			statusLowFps: t('ironman.status.lowFps'),
+			hintStart: t('ironman.hint.start'),
+			hintCamera: t('ironman.hint.camera'),
+			fpsLabel: t('ironman.fps'),
+			infoTitle: t('ironman.info'),
+		}}
+	/>
+</Layout>
+
+<!-- 原代码注释：占位版钢铁侠介绍页（已替换）
+<Layout title={t('ironman.title')} description={t('ironman.intro')}>
+	<IronManHero />
+</Layout>
+-->

@@ -1,0 +1,187 @@
+---
+// 文件说明：钢铁侠实时姿态同步体验组件，提供全屏 3D 画布、画中画摄像头与状态 HUD。
+interface Props {
+	labels: {
+		statusLoading: string;
+		statusTracking: string;
+		statusNoPose: string;
+		statusCameraDenied: string;
+		statusLowFps: string;
+		hintStart: string;
+		hintCamera: string;
+		fpsLabel: string;
+		infoTitle: string;
+	};
+}
+
+const { labels } = Astro.props;
+const labelsJson = JSON.stringify(labels);
+---
+
+<div class="ironman-app" data-labels={labelsJson}>
+	<div id="ironman-info" class="info"></div>
+	<canvas id="ironman-canvas"></canvas>
+	<div id="ironman-pip" class="pip" title="camera">
+		<video id="ironman-video" muted playsinline></video>
+		<canvas id="ironman-pip-overlay" class="pip-overlay"></canvas>
+	</div>
+	<div id="ironman-status" class="status" role="status" data-state="loading">
+		<div class="status-line"></div>
+		<div class="fps-line"></div>
+	</div>
+	<div id="ironman-hint" class="hint"></div>
+	<div id="ironman-start" class="start-overlay">
+		<button id="ironman-start-btn" class="start-btn" type="button"></button>
+	</div>
+</div>
+
+<script>
+	import { initIronManExperience } from '../scripts/ironman/index';
+
+	const root = document.querySelector<HTMLElement>('.ironman-app');
+	if (root) void initIronManExperience(root);
+</script>
+
+<style>
+	:global(body main) {
+		max-width: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	.ironman-app {
+		position: relative;
+		height: calc(100vh - 130px);
+		min-height: 420px;
+		overflow: hidden;
+		background: #111122;
+	}
+	canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	.info {
+		position: absolute;
+		top: 16px;
+		left: 16px;
+		z-index: 10;
+		padding: 10px 16px;
+		border-radius: 8px;
+		background: rgba(0, 0, 0, 0.7);
+		border-left: 4px solid #f5c518;
+		color: #fff;
+		font-size: 0.85rem;
+		pointer-events: none;
+	}
+	.pip {
+		position: absolute;
+		right: 12px;
+		bottom: 12px;
+		z-index: 5;
+		width: 200px;
+		height: 150px;
+		overflow: hidden;
+		border: 2px solid rgba(255, 215, 0, 0.6);
+		border-radius: 12px;
+		cursor: pointer;
+		transition: width 0.3s, height 0.3s;
+		background: #000;
+	}
+	.pip video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scaleX(-1);
+		opacity: 0.85;
+	}
+	.pip-overlay {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		z-index: 1;
+		transform: scaleX(-1);
+	}
+	.pip.expanded {
+		width: 320px;
+		height: 240px;
+	}
+	.status {
+		position: absolute;
+		bottom: 24px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 10;
+		min-width: 200px;
+		padding: 8px 20px;
+		border-radius: 20px;
+		background: rgba(0, 0, 0, 0.65);
+		color: #0f0;
+		font-size: 0.85rem;
+		text-align: center;
+		letter-spacing: 0.05em;
+		border: 1px solid rgba(0, 255, 0, 0.25);
+	}
+	.status[data-state='noPose'] {
+		color: #f5c518;
+		border-color: rgba(245, 197, 24, 0.35);
+	}
+	.status[data-state='denied'],
+	.status[data-state='lowFps'] {
+		color: #ff6b6b;
+		border-color: rgba(255, 107, 107, 0.35);
+	}
+	.status .fps-line {
+		margin-top: 4px;
+		font-size: 0.75rem;
+		color: #9fb0e0;
+	}
+	.hint {
+		position: absolute;
+		bottom: 8px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 3;
+		max-width: calc(100% - 240px);
+		padding: 6px 12px;
+		color: #c6cdea;
+		font-size: 0.75rem;
+		text-align: center;
+		pointer-events: none;
+	}
+	.start-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(4, 5, 12, 0.72);
+		backdrop-filter: blur(4px);
+	}
+	.start-btn {
+		padding: 12px 28px;
+		font-size: 1rem;
+		color: #fff;
+		background: linear-gradient(135deg, #cc2222, #f5c518);
+		border: none;
+		border-radius: 999px;
+		cursor: pointer;
+		transition: transform 0.15s;
+	}
+	.start-btn:hover {
+		transform: scale(1.04);
+	}
+	@media (max-width: 720px) {
+		.pip {
+			width: 120px;
+			height: 90px;
+		}
+		.hint {
+			max-width: calc(100% - 140px);
+			font-size: 0.68rem;
+		}
+	}
+</style>

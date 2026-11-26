@@ -1,0 +1,329 @@
+---
+// 文件说明：手势粒子光感特效组件（增强版）。
+// 渲染画布、画中画摄像头窗口、右上角状态指示器、底部特效进度圆点、
+// 中央特效标题、边缘光晕闪烁与开始按钮，并通过 data-labels JSON 传递翻译文案。
+interface Props {
+	labels: {
+		statusWaiting: string;
+		statusSpread: string;
+		statusFist: string;
+		statusPinch: string;
+		statusRotate: string;
+		statusFallback: string;
+		statusNoHand: string;
+		statusTracking: string;
+		statusCurrentEffect: string;
+		statusMovement: string;
+		dirLeft: string;
+		dirRight: string;
+		snapNotify: string;
+		snapIdle: string;
+		snapApproach: string;
+		snapSnap: string;
+		snapTriggered: string;
+		debugTitle: string;
+		debugDistance: string;
+		debugState: string;
+		debugApproachTime: string;
+		debugCooldown: string;
+		debugCount: string;
+		debugTimes: string;
+		debugCurrentEffect: string;
+		debugHand: string;
+		debugDetected: string;
+		debugNotDetected: string;
+		debugFps: string;
+		statusOpenness: string;
+		statusRotation: string;
+		rotationClockwise: string;
+		rotationCounterclockwise: string;
+		rotationStop: string;
+		hintStart: string;
+		hintCamera: string;
+		hintDenied: string;
+		hintControls: string;
+		hintFallback: string;
+		hintWave: string;
+		effectNames: string[];
+	};
+}
+
+// 序列化翻译文案，供客户端脚本读取
+const { labels } = Astro.props;
+const labelsJson = JSON.stringify(labels);
+---
+
+<div class="gesture-app" data-labels={labelsJson}>
+	<canvas id="gesture-canvas"></canvas>
+	<div id="gesture-pip" class="pip" title="camera">
+		<video id="gesture-video" muted playsinline></video>
+	</div>
+	<div id="gesture-status" class="status" role="status">
+		<div class="effect-line"></div>
+		<div class="gesture-line"></div>
+		<div class="openness-line"></div>
+	</div>
+	<div id="gesture-title" class="title-fade"></div>
+	<div id="gesture-flash" class="edge-flash"></div>
+	<div id="gesture-dots" class="dots"></div>
+	<div id="gesture-hint" class="hint"></div>
+	<div id="gesture-snap-status" class="snap-status"></div>
+	<div id="gesture-debug" class="debug-panel" hidden></div>
+	<div id="gesture-whiteflash" class="whiteflash"></div>
+	<div id="gesture-start" class="start-overlay">
+		<button id="gesture-start-btn" class="start-btn"></button>
+	</div>
+</div>
+
+<script>
+	import { initGestureExperience } from '../scripts/gesture';
+
+	const root = document.querySelector<HTMLElement>('.gesture-app');
+	if (root) void initGestureExperience(root);
+</script>
+
+<style>
+	:global(body main) {
+		max-width: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	.gesture-app {
+		position: relative;
+		height: calc(100vh - 130px);
+		min-height: 420px;
+		overflow: hidden;
+		background: #04050c;
+	}
+	canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	/* 画中画窗口：默认小窗，点击展开 */
+	.pip {
+		position: absolute;
+		right: 12px;
+		bottom: 12px;
+		z-index: 5;
+		width: 96px;
+		height: 72px;
+		overflow: hidden;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 8px;
+		cursor: pointer;
+		transition: width 0.3s, height 0.3s;
+		background: #000;
+	}
+	.pip video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scaleX(-1);
+	}
+	.pip.expanded {
+		width: 280px;
+		height: 210px;
+	}
+	.status {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		z-index: 3;
+		min-width: 130px;
+		padding: 8px 14px;
+		border-radius: 8px;
+		background: rgba(8, 10, 20, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		color: #eaf0ff;
+		font-size: 0.85rem;
+	}
+	.status .effect-line {
+		font-weight: 600;
+		margin-bottom: 2px;
+	}
+	.status .gesture-line {
+		font-size: 0.75rem;
+		color: #b9c2e8;
+	}
+	.status .openness-line {
+		margin-top: 4px;
+		font-size: 0.72rem;
+		color: #9fb0e0;
+		letter-spacing: 0.02em;
+	}
+	.status .openness-line .rot {
+		color: #ffd34d;
+	}
+	.status[data-state='spread'] {
+		border-color: #2de0c0;
+	}
+	.status[data-state='fist'] {
+		border-color: #ff8c3a;
+	}
+	.status[data-state='pinch'] {
+		border-color: #7b3ff2;
+	}
+	.status[data-state='rotate'] {
+		border-color: #ff4d8d;
+	}
+	.status[data-state='fallback'] {
+		border-color: #8fb4ff;
+	}
+	.status[data-state='noHand'],
+	.status[data-state='waiting'] {
+		border-color: #6b7299;
+	}
+	/* 中央特效大标题：切换时淡入，2 秒后淡出 */
+	.title-fade {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 3;
+		pointer-events: none;
+		font-size: 2.2rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		color: rgba(255, 255, 255, 0.88);
+		text-shadow: 0 0 24px rgba(123, 63, 242, 0.9), 0 0 60px rgba(45, 224, 192, 0.5);
+		opacity: 0;
+		transition: opacity 0.6s ease;
+		text-align: center;
+	}
+	.title-fade .title-index {
+		display: block;
+		font-size: 0.95rem;
+		font-weight: 500;
+		opacity: 0.8;
+		margin-top: 4px;
+	}
+	.title-fade.show {
+		opacity: 1;
+	}
+	/* 边缘光晕闪烁过渡 */
+	.edge-flash {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.6s ease;
+		background: radial-gradient(ellipse at center, transparent 52%, rgba(123, 63, 242, 0.5) 92%, rgba(45, 224, 192, 0.65) 100%);
+	}
+	.edge-flash.flash {
+		opacity: 1;
+	}
+	/* 底部特效进度圆点 */
+	.dots {
+		position: absolute;
+		bottom: 40px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 3;
+		display: flex;
+		gap: 8px;
+	}
+	.dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.25);
+		transition: background 0.2s, transform 0.2s;
+	}
+	.dot.active {
+		background: #2de0c0;
+		transform: scale(1.35);
+		box-shadow: 0 0 8px rgba(45, 224, 192, 0.9);
+	}
+	.hint {
+		position: absolute;
+		bottom: 8px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 3;
+		max-width: calc(100% - 140px);
+		padding: 8px 14px;
+		border-radius: 8px;
+		background: rgba(8, 10, 20, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		color: #c6cdea;
+		font-size: 0.78rem;
+		text-align: center;
+	}
+	/* 打响指状态文字（跟随手掌位置上方） */
+	.snap-status {
+		position: absolute;
+		z-index: 4;
+		display: none;
+		transform: translate(-50%, -100%);
+		pointer-events: none;
+		font-size: 1.15rem;
+		font-weight: 700;
+		text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+		transition: color 0.2s;
+		white-space: nowrap;
+	}
+	/* 调试面板（默认隐藏，按 D 切换） */
+	.debug-panel {
+		position: absolute;
+		top: 16px;
+		left: 16px;
+		z-index: 6;
+		min-width: 220px;
+		padding: 10px 14px;
+		border-radius: 8px;
+		background: rgba(8, 10, 20, 0.88);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		color: #cfe8ff;
+		font-size: 0.75rem;
+		line-height: 1.7;
+		font-family: Consolas, Monaco, monospace;
+	}
+	.debug-panel .db-title {
+		font-weight: 700;
+		margin-bottom: 4px;
+	}
+	/* 打响指时的白色闪屏 */
+	.whiteflash {
+		position: absolute;
+		inset: 0;
+		z-index: 4;
+		background: #fff;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.start-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(4, 5, 12, 0.72);
+		backdrop-filter: blur(4px);
+	}
+	.start-btn {
+		padding: 12px 28px;
+		font-size: 1rem;
+		color: #fff;
+		background: linear-gradient(135deg, #3a5cff, #7b3ff2);
+		border: none;
+		border-radius: 999px;
+		cursor: pointer;
+		transition: transform 0.15s;
+	}
+	.start-btn:hover {
+		transform: scale(1.04);
+	}
+	@media (max-width: 720px) {
+		.title-fade {
+			font-size: 1.5rem;
+		}
+		.hint {
+			max-width: calc(100% - 110px);
+			font-size: 0.7rem;
+		}
+	}
+</style>

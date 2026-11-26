@@ -1,0 +1,36 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables（真实密钥只放本地 .env，示例文件只放占位符）
+.env
+.env.local
+.env.*.local
+.env.production
+!.env.example
+
+# 临时截图 / 调试产物
+.shots/
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# uploaded files (keep directory via .gitkeep)
+uploads/*
+!uploads/.gitkeep
+uploads/.chunks/
+uploads/.manifest.json

@@ -1,0 +1,190 @@
+---
+// 文件说明：文件管理界面组件，表格布局，支持搜索、筛选、分页与批量删除。
+interface Props {
+	labels: {
+		title: string;
+		description: string;
+		search: string;
+		searchModeName: string;
+		searchModeOcr: string;
+		searchPlaceholderOcr: string;
+		searchOcrPendingHint: string;
+		searchMatchCount: string;
+		filterAll: string;
+		filterImage: string;
+		filterDocument: string;
+		filterVideo: string;
+		filterAudio: string;
+		tabAll: string;
+		empty: string;
+		pageInfo: string;
+		prev: string;
+		next: string;
+		copyLink: string;
+		delete: string;
+		preview: string;
+		open: string;
+		download: string;
+		copied: string;
+		deleteConfirm: string;
+		bulkDelete: string;
+		bulkSelected: string;
+		bulkDeleteConfirm: string;
+		selectAll: string;
+		colName: string;
+		colType: string;
+		colCategory: string;
+		colExpiry: string;
+		colSize: string;
+		colUploadedAt: string;
+		colActions: string;
+		typeFile: string;
+		categoryImage: string;
+		categoryDocument: string;
+		categoryOther: string;
+		expiryNone: string;
+		serverOffline: string;
+		previewClose: string;
+		previewLoading: string;
+		previewUnsupported: string;
+		previewLoadError: string;
+		previewOpenNew: string;
+		searchMatchCount: string;
+		searchHitSummary: string;
+		confirmCancel: string;
+		confirmOk: string;
+	};
+}
+
+const { labels } = Astro.props;
+const labelsJson = JSON.stringify(labels);
+const apiBase = import.meta.env.PUBLIC_UPLOAD_API ?? 'http://localhost:3001';
+const previewLabels = {
+	close: labels.previewClose,
+	loading: labels.previewLoading,
+	unsupported: labels.previewUnsupported,
+	loadError: labels.previewLoadError,
+	openNew: labels.previewOpenNew,
+	download: labels.download,
+	searchMatchCount: labels.searchMatchCount,
+	searchHitSummary: labels.searchHitSummary,
+};
+const confirmLabels = {
+	cancel: labels.confirmCancel,
+	confirm: labels.confirmOk,
+};
+import FilePreviewModal from './FilePreviewModal';
+import ConfirmDialog from './ConfirmDialog';
+---
+<style>
+	/* 文件管理页需要更宽的内容区，覆盖全局 main 720px 限制 */
+	:global(body main) {
+		width: auto;
+		max-width: min(96rem, calc(100% - 2rem));
+	}
+	/* 阿里 iconfont 文件类型 Symbol 图标尺寸 */
+	:global(.file-type-icon) {
+		width: 20px;
+		height: 20px;
+		vertical-align: -0.15em;
+		overflow: hidden;
+	}
+</style>
+<script is:inline src="/iconfont/file-type.js"></script>
+<!-- 原代码注释：class="file-manager max-w-6xl mx-auto" -->
+<div class="file-manager w-full mx-auto" data-labels={labelsJson} data-api-base={apiBase}>
+	<h1 class="text-3xl font-bold text-gray-900 mb-2">{labels.title}</h1>
+	<p class="text-gray-600 mb-6">{labels.description}</p>
+
+	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+		<span class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 inline-block w-fit">
+			{labels.tabAll}
+		</span>
+		<!-- 原代码注释：sm:max-w-xl -->
+		<div class="flex flex-col sm:flex-row gap-3 sm:flex-1 sm:justify-end sm:max-w-2xl lg:max-w-none lg:w-auto">
+			<select
+				data-search-mode
+				class="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shrink-0"
+			>
+				<option value="name">{labels.searchModeName}</option>
+				<option value="ocr">{labels.searchModeOcr}</option>
+			</select>
+			<input
+				type="search"
+				data-search-input
+				placeholder={labels.search}
+				class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+			/>
+			<select
+				data-filter-select
+				class="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+			>
+				<option value="">{labels.filterAll}</option>
+				<option value="image">{labels.filterImage}</option>
+				<option value="document">{labels.filterDocument}</option>
+				<option value="video">{labels.filterVideo}</option>
+				<option value="audio">{labels.filterAudio}</option>
+			</select>
+		</div>
+	</div>
+
+	<div data-bulk-toolbar class="hidden mb-3 flex items-center gap-3 text-sm">
+		<span data-bulk-count class="text-gray-600"></span>
+		<button
+			type="button"
+			data-bulk-delete
+			class="px-3 py-1.5 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50"
+		>
+			{labels.bulkDelete}
+		</button>
+	</div>
+
+	<div class="overflow-x-auto border border-gray-200 rounded-lg bg-white">
+		<!-- 原代码注释：min-w-[800px] -->
+		<table class="w-full text-sm table-fixed">
+			<thead class="bg-gray-50 text-gray-500 border-b border-gray-200">
+				<tr>
+					<th class="w-10 px-3 py-3 text-left font-normal">
+						<input
+							type="checkbox"
+							data-select-all
+							class="rounded border-gray-300"
+							title={labels.selectAll}
+							aria-label={labels.selectAll}
+						/>
+					</th>
+					<th class="px-3 py-3 text-left font-normal w-[36%]">{labels.colName}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colType}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colCategory}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colExpiry}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colSize}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colUploadedAt}</th>
+					<th class="px-3 py-3 text-left font-normal whitespace-nowrap">{labels.colActions}</th>
+				</tr>
+			</thead>
+			<tbody data-file-table-body class="list-fade" aria-busy="true">
+				{[42, 66, 53, 72, 47].map((width) => (
+					<tr aria-hidden="true">
+						<td colspan="8" class="px-3 py-3">
+							<div class="skeleton-line" style={`width:${width}%`} />
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<div data-pagination class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3"></div>
+
+	<div data-toast class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50"></div>
+
+	<FilePreviewModal client:load labels={previewLabels} />
+	<ConfirmDialog client:load labels={confirmLabels} />
+</div>
+
+<script>
+	import { initFileManager } from '../scripts/fileManager';
+
+	const root = document.querySelector<HTMLElement>('.file-manager');
+	if (root) void initFileManager(root);
+</script>

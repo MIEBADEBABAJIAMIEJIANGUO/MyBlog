@@ -1,0 +1,17 @@
+---
+// 文件说明：英文首页（路由 /en），嵌入智能助手（UI 文案仍为中文）。
+import Layout from '../../layouts/Layout.astro';
+import AgentBlogShell from '../../components/AgentBlogShell.astro';
+import { agentLabels } from '../../scripts/agent/labels';
+---
+
+<Layout title={agentLabels.title} description={agentLabels.pageDescription}>
+	<AgentBlogShell />
+</Layout>
+
+<!-- 原代码注释：HomeHero 英文首页
+import HomeHero from '../../components/HomeHero.astro';
+<Layout title={t('site.title')} description={t('site.description')}>
+	<HomeHero />
+</Layout>
+-->

@@ -1,0 +1,112 @@
+---
+// 文件说明：文件上传体验组件，提供 Tailwind 拖拽区、上传队列、进度条与已上传列表。
+interface Props {
+	labels: {
+		title: string;
+		description: string;
+		dropzone: string;
+		select: string;
+		submit: string;
+		uploading: string;
+		success: string;
+		error: string;
+		serverOffline: string;
+		fileInfo: string;
+		preview: string;
+		listTitle: string;
+		statusUploading: string;
+		statusSuccess: string;
+		statusFailed: string;
+		statusPending: string;
+		fileInfoItem: string;
+		fileInfoMore: string;
+		remove: string;
+		retry: string;
+		progress: string;
+		speedEta: string;
+		errorCode: string;
+		emptyList: string;
+		validationFailed: string;
+		copyLink: string;
+		delete: string;
+		copied: string;
+		deleteConfirm: string;
+		clearCompleted: string;
+		restoreFailed: string;
+		goToFiles: string;
+	};
+	filesPageHref: string;
+}
+
+// 序列化翻译文案，供客户端脚本读取
+const { labels, filesPageHref } = Astro.props;
+const labelsJson = JSON.stringify(labels);
+const apiBase = import.meta.env.PUBLIC_UPLOAD_API ?? 'http://localhost:3001';
+---
+
+<div class="upload-app max-w-xl mx-auto" data-labels={labelsJson} data-api-base={apiBase}>
+	<h1 class="text-3xl font-bold text-gray-900 mb-2">{labels.title}</h1>
+	<p class="text-gray-600 mb-6">{labels.description}</p>
+
+	<div
+		data-dropzone
+		class="border-dashed border-2 border-gray-300 rounded-xl p-10 text-center cursor-pointer transition-colors hover:border-blue-400 hover:bg-gray-50"
+	>
+		<p class="text-gray-500 mb-4">{labels.dropzone}</p>
+		<button
+			type="button"
+			data-select-btn
+			class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+		>
+			{labels.select}
+		</button>
+		<!-- 原代码注释：<input type="file" data-file-input class="hidden" accept="image/*,.pdf,.txt,.doc,.docx" /> -->
+		<input type="file" data-file-input class="hidden" accept="image/*,.pdf,.txt,.doc,.docx" multiple />
+	</div>
+
+	<p data-file-info class="hidden mt-4 text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-2"></p>
+	<div data-validation-errors class="hidden mt-2 text-sm bg-red-50 rounded-lg px-4 py-2"></div>
+
+	<button
+		type="button"
+		data-submit-btn
+		class="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+	>
+		{labels.submit}
+	</button>
+
+	<div data-toast class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50"></div>
+
+	<!-- 上传任务队列工具栏 -->
+	<div data-queue-toolbar class="mt-6 hidden"></div>
+
+	<!-- 上传任务队列：进行中 / 成功 / 失败 -->
+	<div data-upload-queue class="mt-2 hidden"></div>
+
+	<!-- 已上传文件列表 -->
+	<div class="mt-8">
+		<div class="flex items-center justify-between mb-3">
+			<h2 class="text-lg font-semibold text-gray-900">{labels.listTitle}</h2>
+			<a href={filesPageHref} class="text-sm text-indigo-600 hover:underline">{labels.goToFiles}</a>
+		</div>
+		<div data-upload-list class="list-fade" aria-busy="true">
+			{[58, 74, 49].map((width) => (
+				<div class="border border-gray-100 rounded-lg px-4 py-3 mb-2 bg-gray-50">
+					<div class="skeleton-line" style={`width:${width}%`} />
+				</div>
+			))}
+		</div>
+	</div>
+
+	<!-- 原代码注释：单链接预览区（已合并至已上传列表与队列卡片）
+	<div data-status class="mt-4 text-sm rounded-lg px-4 py-2 hidden"></div>
+	<div data-preview class="mt-3 text-sm"></div>
+	-->
+</div>
+
+<script>
+	import { initUploadExperience } from '../scripts/upload';
+
+	const root = document.querySelector<HTMLElement>('.upload-app');
+	if (root) void initUploadExperience(root);
+</script>

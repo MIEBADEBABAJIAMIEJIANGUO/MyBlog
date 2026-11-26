@@ -1,0 +1,73 @@
+---
+// 文件说明：简历页主体——把首屏、技能、经历、项目、教育与证书、打印版详情拼装成完整页面。
+// 中英文页面（/resume 与 /en/resume）共用此组件，语言由路由自动决定。
+import type { Resume } from '../../data/resume';
+import ProjectDrawer from './ProjectDrawer.tsx';
+import ProjectGrid from './ProjectGrid.astro';
+import PrintProjects from './PrintProjects.astro';
+import ResumeHero from './ResumeHero.astro';
+import SkillsGrid from './SkillsGrid.astro';
+import Timeline from './Timeline.astro';
+
+interface Props {
+	resume: Resume;
+}
+
+const { resume } = Astro.props;
+const education = resume.timeline.find((entry) => entry.kind === 'edu');
+const ui = resume.ui;
+---
+
+<ResumeHero resume={resume} />
+<SkillsGrid resume={resume} />
+<Timeline resume={resume} />
+<ProjectGrid resume={resume} />
+
+<!-- 打印时静态展开全部项目详情（位置紧跟项目区，保证打印顺序为 03 项目 → 04 教育与证书） -->
+<PrintProjects resume={resume} />
+
+<section class="rz-section" id="more">
+	<div class="rz-shell">
+		<div class="rz-reveal">
+			<div class="rz-section-head">
+				<span class="rz-section-num">04</span>
+				<h2 class="rz-section-title">{ui.sections.more}</h2>
+				<span class="rz-section-sub">Background</span>
+			</div>
+		</div>
+
+		<div class="rz-more">
+			<div class="rz-panel rz-reveal">
+				<p class="rz-panel-title">Education</p>
+				{
+					education && (
+						<>
+							<p class="rz-edu-degree">{education.title}</p>
+							<p class="rz-edu-org">
+								{education.org} · {education.period}
+							</p>
+							<p class="rz-edu-summary">{education.summary}</p>
+						</>
+					)
+				}
+			</div>
+
+			<div class="rz-panel rz-reveal" style="--rz-delay: 80ms">
+				<p class="rz-panel-title">Certificates</p>
+				<ul class="rz-certs">
+					{
+						resume.certificates.map((cert) => (
+							<li class="rz-cert">
+								<span class="rz-cert-name">{cert.name}</span>
+								<span class="rz-cert-note">{cert.note}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 屏幕端：点击卡片后从右侧滑出的详情抽屉 -->
+<ProjectDrawer client:load projects={resume.projects} labels={ui.drawer} />

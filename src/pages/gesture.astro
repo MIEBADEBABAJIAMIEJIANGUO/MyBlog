@@ -1,0 +1,81 @@
+---
+// 文件说明：手势交互页面（默认中文路由 /gesture），承载手势粒子光感特效体验。
+// 原代码注释：以下为占位版手势页面代码，已替换为完整的手势粒子特效实现。
+/*
+import Layout from '../layouts/Layout.astro';
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+*/
+import Layout from '../layouts/Layout.astro';
+import GestureExperience from '../components/GestureExperience.astro';
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+// 计算当前页面语言，若无法获取则回退到默认语言
+const lang = Astro.currentLocale ?? defaultLang;
+// 获取当前语言的翻译函数
+const t = useTranslations(lang);
+---
+
+<Layout title={t('gesture.title')} description={t('site.description')}>
+	<GestureExperience
+		labels={{
+			statusWaiting: t('gesture.status.waiting'),
+			statusSpread: t('gesture.status.spread'),
+			statusFist: t('gesture.status.fist'),
+			statusPinch: t('gesture.status.pinch'),
+			statusRotate: t('gesture.status.rotate'),
+			statusFallback: t('gesture.status.fallback'),
+			statusNoHand: t('gesture.status.noHand'),
+			statusTracking: t('gesture.status.tracking'),
+			statusCurrentEffect: t('gesture.status.currentEffect'),
+			statusMovement: t('gesture.status.movement'),
+			dirLeft: t('gesture.dir.left'),
+			dirRight: t('gesture.dir.right'),
+			snapNotify: t('gesture.snap.notify'),
+			snapIdle: t('gesture.snap.idle'),
+			snapApproach: t('gesture.snap.approach'),
+			snapSnap: t('gesture.snap.snap'),
+			snapTriggered: t('gesture.snap.triggered'),
+			debugTitle: t('gesture.debug.title'),
+			debugDistance: t('gesture.debug.distance'),
+			debugState: t('gesture.debug.state'),
+			debugApproachTime: t('gesture.debug.approachTime'),
+			debugCooldown: t('gesture.debug.cooldown'),
+			debugCount: t('gesture.debug.count'),
+			debugTimes: t('gesture.debug.times'),
+			debugCurrentEffect: t('gesture.debug.currentEffect'),
+			debugHand: t('gesture.debug.hand'),
+			debugDetected: t('gesture.debug.detected'),
+			debugNotDetected: t('gesture.debug.notDetected'),
+			debugFps: t('gesture.debug.fps'),
+			statusOpenness: t('gesture.status.openness'),
+			statusRotation: t('gesture.status.rotation'),
+			rotationClockwise: t('gesture.rotation.clockwise'),
+			rotationCounterclockwise: t('gesture.rotation.counterclockwise'),
+			rotationStop: t('gesture.rotation.stop'),
+			hintStart: t('gesture.hint.start'),
+			hintCamera: t('gesture.hint.camera'),
+			hintDenied: t('gesture.hint.denied'),
+			hintControls: t('gesture.hint.controls'),
+			hintFallback: t('gesture.hint.fallback'),
+			hintWave: t('gesture.hint.wave'),
+			effectNames: [
+				t('gesture.effect.1'),
+				t('gesture.effect.2'),
+				t('gesture.effect.3'),
+				t('gesture.effect.4'),
+				t('gesture.effect.5'),
+				t('gesture.effect.6'),
+			],
+		}}
+	/>
+</Layout>
+
+<!-- 原代码注释：占位版手势页面结构（已替换）
+<Layout title={t('gesture.title')} description={t('site.description')}>
+	<h1>{t('gesture.title')}</h1>
+	<p>{t('gesture.placeholder')}</p>
+</Layout>
+-->

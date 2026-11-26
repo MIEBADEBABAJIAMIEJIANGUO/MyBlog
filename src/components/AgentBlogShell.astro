@@ -1,0 +1,49 @@
+---
+// 文件说明：首页嵌入的智能助手博客风外壳（Hero + 卡片聊天，保留页脚）。
+import AgentChat from './AgentChat';
+import { agentLabels } from '../scripts/agent/labels';
+import agentBg from '../assets/images/gongyuanxun.png';
+import '../styles/agent-acg-theme.css';
+
+const apiBase = import.meta.env.PUBLIC_UPLOAD_API ?? 'http://localhost:3001';
+---
+
+<div class="agent-acg agent-shell-page">
+	<div class="agent-app" data-api-base={apiBase}>
+		<header class="agent-shell-hero">
+			<h1 class="agent-shell-title">{agentLabels.title}</h1>
+			<p class="agent-shell-subtitle">{agentLabels.subtitle}</p>
+		</header>
+		<div class="agent-shell-card">
+			<AgentChat
+				client:load
+				labels={agentLabels}
+				settingsHref="/agent/settings"
+				chatBgSrc={agentBg.src}
+			/>
+		</div>
+	</div>
+</div>
+
+<script>
+	import { preloadLottiePlayer } from '../scripts/preloadLottie';
+	import { setApiBase } from '../scripts/upload/types';
+
+	void preloadLottiePlayer();
+
+	const root = document.querySelector<HTMLElement>('.agent-acg .agent-app');
+	if (root?.dataset.apiBase) setApiBase(root.dataset.apiBase);
+</script>
+
+<style>
+	:global(body:has(.agent-shell-page) main) {
+		width: 100%;
+		max-width: min(56rem, calc(100% - 2rem));
+		margin: 0 auto;
+		padding: 1.5rem 1rem 2rem;
+	}
+
+	.agent-app {
+		width: 100%;
+	}
+</style>

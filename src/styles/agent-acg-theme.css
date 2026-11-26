@@ -1,0 +1,270 @@
+/* 文件说明：智能助手 ACG 博客风主题，作用域 .agent-acg */
+
+.agent-acg {
+	--agent-pink: #f9a8d4;
+	--agent-pink-deep: #db2777;
+	--agent-purple: #e879f9;
+	--agent-lilac: #fbcfe8;
+	--agent-surface: rgba(255, 255, 255, 0.92);
+	--agent-border: rgba(249, 168, 212, 0.45);
+	--agent-text: rgb(55, 48, 63);
+	--agent-muted: rgb(120, 100, 115);
+	--agent-accent-link: #c026d3;
+}
+
+.agent-acg .agent-shell-hero {
+	text-align: center;
+	padding: 0.5rem 0 1.25rem;
+}
+
+.agent-acg .agent-shell-title {
+	margin: 0 0 0.35rem;
+	font-size: clamp(1.75rem, 4vw, 2.25rem);
+	font-weight: 800;
+	background: linear-gradient(120deg, #db2777, #c026d3, #e879f9);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	letter-spacing: 0.02em;
+}
+
+.agent-acg .agent-shell-subtitle {
+	margin: 0;
+	font-size: 0.95rem;
+	color: var(--agent-muted);
+}
+
+.agent-acg .agent-shell-card {
+	background: var(--agent-surface);
+	border: 1px solid var(--agent-border);
+	border-radius: 1rem;
+	box-shadow:
+		0 4px 24px rgba(219, 39, 119, 0.08),
+		0 1px 3px rgba(0, 0, 0, 0.04);
+	overflow: hidden;
+	height: min(72vh, calc(100vh - 16rem));
+	min-height: 420px;
+}
+
+.agent-acg .agent-shell-page {
+	background: linear-gradient(
+		165deg,
+		#fff5f7 0%,
+		#fce7f3 35%,
+		#fdf4ff 70%,
+		#fff 100%
+	);
+	padding: 0.5rem 0 2rem;
+}
+
+/* main 宽度由 AgentBlogShell.astro / settings.astro 的 scoped :global 规则控制 */
+
+/* —— AgentChat 语义类 —— */
+
+.agent-acg .agent-chat-root {
+	display: flex;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+	background: rgba(255, 255, 255, 0.6);
+}
+
+.agent-acg .agent-chat-sidebar {
+	width: 14rem;
+	flex-shrink: 0;
+	border-right: 1px solid var(--agent-border);
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(180deg, #fdf2f8 0%, #faf5ff 100%);
+}
+
+.agent-acg .agent-chat-sidebar-head {
+	padding: 0.75rem;
+	border-bottom: 1px solid var(--agent-border);
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.agent-acg .agent-btn-primary {
+	width: 100%;
+	padding: 0.5rem 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #fff;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	background: linear-gradient(135deg, #f472b6, #c026d3);
+	transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+.agent-acg .agent-btn-primary:hover:not(:disabled) {
+	filter: brightness(1.05);
+}
+
+.agent-acg .agent-btn-primary:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.agent-acg .agent-btn-primary--compact {
+	width: auto;
+	padding-left: 1.25rem;
+	padding-right: 1.25rem;
+}
+
+.agent-acg .agent-link-muted {
+	display: block;
+	text-align: center;
+	font-size: 0.75rem;
+	color: var(--agent-accent-link);
+	text-decoration: none;
+}
+
+.agent-acg .agent-link-muted:hover {
+	text-decoration: underline;
+}
+
+.agent-acg .agent-session-btn {
+	flex: 1;
+	text-align: left;
+	font-size: 0.75rem;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	color: var(--agent-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.agent-acg .agent-session-btn:hover {
+	background: rgba(255, 255, 255, 0.7);
+}
+
+.agent-acg .agent-session-btn--active {
+	background: #fff;
+	box-shadow: 0 1px 4px rgba(219, 39, 119, 0.12);
+	color: var(--agent-pink-deep);
+	font-weight: 600;
+}
+
+.agent-acg .agent-bubble-user {
+	max-width: 85%;
+	border-radius: 0.75rem;
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	white-space: pre-wrap;
+	word-break: break-word;
+	color: #fff;
+	background: linear-gradient(135deg, #f472b6, #a855f7);
+}
+
+.agent-acg .agent-bubble-assistant {
+	max-width: 85%;
+	border-radius: 0.75rem;
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	white-space: pre-wrap;
+	word-break: break-word;
+	color: var(--agent-text);
+	background: rgba(255, 255, 255, 0.88);
+	border: 1px solid rgba(249, 168, 212, 0.35);
+	backdrop-filter: blur(6px);
+}
+
+.agent-acg .agent-input-area {
+	border-top: 1px solid var(--agent-border);
+	padding: 0.75rem;
+	display: flex;
+	gap: 0.5rem;
+	background: rgba(255, 255, 255, 0.85);
+}
+
+.agent-acg .agent-textarea {
+	flex: 1;
+	resize: none;
+	border-radius: 0.5rem;
+	border: 1px solid rgba(249, 168, 212, 0.5);
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	outline: none;
+}
+
+.agent-acg .agent-textarea:focus {
+	box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.35);
+	border-color: var(--agent-pink);
+}
+
+.agent-acg .agent-btn-send {
+	flex-shrink: 0;
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #fff;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	background: linear-gradient(135deg, #f472b6, #c026d3);
+}
+
+.agent-acg .agent-btn-send:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.agent-acg .agent-loading {
+	display: flex;
+	height: 100%;
+	min-height: 0;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.875rem;
+	color: var(--agent-muted);
+}
+
+/* —— 设置页（同一主题） —— */
+
+.agent-acg .agent-settings-panel {
+	max-width: 48rem;
+	margin: 0 auto;
+}
+
+.agent-acg .agent-settings-section {
+	background: var(--agent-surface);
+	border: 1px solid var(--agent-border);
+	border-radius: 1rem;
+	padding: 1.5rem;
+}
+
+.agent-acg .agent-settings-title {
+	font-size: 1.5rem;
+	font-weight: 800;
+	color: var(--agent-text);
+}
+
+.agent-acg .agent-settings-input {
+	width: 100%;
+	border: 1px solid rgba(249, 168, 212, 0.5);
+	border-radius: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+}
+
+.agent-acg .agent-settings-input:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.35);
+}
+
+.agent-acg .agent-link-accent {
+	font-size: 0.875rem;
+	color: var(--agent-accent-link);
+	text-decoration: none;
+}
+
+.agent-acg .agent-link-accent:hover {
+	text-decoration: underline;
+}

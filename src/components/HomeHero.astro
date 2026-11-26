@@ -1,0 +1,59 @@
+---
+// 文件说明：首页主视觉区块，展示欢迎语、简介与跳转手势交互页的入口按钮。
+// 原代码注释：首页已改为 AgentBlogShell，本组件暂保留供日后复用。
+import { NAV_SHOW_GESTURE_IRONMAN } from '../consts';
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+// 计算当前页面语言，若无法获取则回退到默认语言
+const lang = Astro.currentLocale ?? defaultLang;
+// 获取当前语言的翻译函数
+const t = useTranslations(lang);
+// 根据语言生成手势页链接
+const gestureHref = lang === 'en' ? '/en/gesture' : '/gesture';
+---
+
+<section class="home-hero">
+	<h1>{t('home.hello')}</h1>
+	<p class="home-intro">{t('home.intro')}</p>
+	<p class="home-hint">{t('home.hint')}</p>
+	{
+		NAV_SHOW_GESTURE_IRONMAN && (
+			<a href={gestureHref} class="home-cta">
+				{t('home.cta')}
+			</a>
+		)
+	}
+	<!-- 原代码注释：手势体验入口（NAV_SHOW_GESTURE_IRONMAN 为 true 时显示）
+	<a href={gestureHref} class="home-cta">{t('home.cta')}</a>
+	-->
+</section>
+
+<style>
+	.home-hero {
+		padding: 1rem 0 2rem;
+	}
+	.home-intro {
+		font-size: 1.15em;
+		margin-bottom: 0.75em;
+	}
+	.home-hint {
+		color: rgb(var(--gray));
+		font-size: 0.95em;
+		margin-bottom: 2em;
+	}
+	.home-cta {
+		display: inline-block;
+		padding: 0.75em 1.75em;
+		background: var(--accent);
+		color: #fff;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 700;
+		box-shadow: var(--box-shadow);
+		transition: background 0.2s ease;
+	}
+	.home-cta:hover {
+		background: var(--accent-dark);
+		color: #fff;
+	}
+</style>

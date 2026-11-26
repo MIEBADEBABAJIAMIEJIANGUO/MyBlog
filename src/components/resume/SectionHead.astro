@@ -1,0 +1,15 @@
+---
+// 文件说明：简历页的区块标题（编号 + 主标题 + 右侧英文副标题）。
+interface Props {
+	num: string;
+	title: string;
+	sub?: string;
+}
+const { num, title, sub } = Astro.props;
+---
+
+<div class="rz-section-head">
+	<span class="rz-section-num">{num}</span>
+	<h2 class="rz-section-title">{title}</h2>
+	{sub && <span class="rz-section-sub">{sub}</span>}
+</div>

@@ -1,0 +1,51 @@
+---
+// 文件说明：文件上传页面（默认中文路由 /upload），提供拖拽与选择文件上传体验。
+import Layout from '../layouts/Layout.astro';
+import UploadExperience from '../components/UploadExperience.astro';
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+// 计算当前页面语言，若无法获取则回退到默认语言
+const lang = Astro.currentLocale ?? defaultLang;
+// 获取当前语言的翻译函数
+const t = useTranslations(lang);
+---
+
+<Layout title={t('upload.title')} description={t('upload.description')}>
+	<UploadExperience
+		labels={{
+			title: t('upload.title'),
+			description: t('upload.description'),
+			dropzone: t('upload.dropzone'),
+			select: t('upload.select'),
+			submit: t('upload.submit'),
+			uploading: t('upload.uploading'),
+			success: t('upload.success'),
+			error: t('upload.error'),
+			serverOffline: t('upload.serverOffline'),
+			fileInfo: t('upload.fileInfo'),
+			preview: t('upload.preview'),
+			listTitle: t('upload.listTitle'),
+			statusUploading: t('upload.status.uploading'),
+			statusSuccess: t('upload.status.success'),
+			statusFailed: t('upload.status.failed'),
+			statusPending: t('upload.status.pending'),
+			fileInfoItem: t('upload.fileInfoItem'),
+			fileInfoMore: t('upload.fileInfoMore'),
+			remove: t('upload.remove'),
+			retry: t('upload.retry'),
+			progress: t('upload.progress'),
+			speedEta: t('upload.speedEta'),
+			errorCode: t('upload.errorCode'),
+			emptyList: t('upload.emptyList'),
+			validationFailed: t('upload.validationFailed'),
+			copyLink: t('upload.copyLink'),
+			delete: t('upload.delete'),
+			copied: t('upload.copied'),
+			deleteConfirm: t('upload.deleteConfirm'),
+			clearCompleted: t('upload.clearCompleted'),
+			restoreFailed: t('upload.restoreFailed'),
+			goToFiles: t('upload.goToFiles'),
+		}}
+		filesPageHref="/files"
+	/>
+</Layout>

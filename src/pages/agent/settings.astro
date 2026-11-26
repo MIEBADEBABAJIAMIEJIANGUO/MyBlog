@@ -1,0 +1,45 @@
+---
+// 文件说明：Agent 人设与知识库绑定设置页（仅中文路由 /agent/settings）。
+import Layout from '../../layouts/Layout.astro';
+import AgentSettings from '../../components/AgentSettings';
+import { agentLabels } from '../../scripts/agent/labels';
+import '../../styles/agent-acg-theme.css';
+
+const apiBase = import.meta.env.PUBLIC_UPLOAD_API ?? 'http://localhost:3001';
+---
+
+<Layout title={agentLabels.settingsTitle} description="配置 Agent 人设与知识库文件绑定">
+	<div class="agent-acg agent-settings-page" data-api-base={apiBase}>
+		<div class="agent-settings-app">
+			<AgentSettings client:load labels={agentLabels} chatHref="/" />
+		</div>
+	</div>
+</Layout>
+
+<script>
+	import { setApiBase } from '../../scripts/upload/types';
+
+	const root = document.querySelector<HTMLElement>('.agent-settings-page');
+	if (root?.dataset.apiBase) setApiBase(root.dataset.apiBase);
+</script>
+
+<style>
+	:global(body:has(.agent-settings-page) main) {
+		width: 100%;
+		max-width: min(48rem, calc(100% - 2rem));
+		margin: 0 auto;
+		padding: 1.5rem 1rem 2rem;
+	}
+
+	.agent-settings-page {
+		background: linear-gradient(
+			165deg,
+			#fff5f7 0%,
+			#fce7f3 35%,
+			#fdf4ff 70%,
+			#fff 100%
+		);
+		padding: 0.5rem 0 1.5rem;
+		border-radius: 0.75rem;
+	}
+</style>

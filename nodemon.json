@@ -1,0 +1,7 @@
+{
+  "watch": ["server", ".env"],
+  "ext": "js,json",
+  "ignore": ["uploads/**", "node_modules/**"],
+  "exec": "node server/index.js",
+  "verbose": true
+}

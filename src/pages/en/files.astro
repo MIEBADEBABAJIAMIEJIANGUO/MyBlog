@@ -1,0 +1,66 @@
+---
+// 文件说明：文件管理页面（英文路由 /en/files）。
+import Layout from '../../layouts/Layout.astro';
+import FileManager from '../../components/FileManager.astro';
+import { defaultLang, useTranslations } from '../../i18n/ui';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+---
+
+<Layout title={t('files.title')} description={t('files.description')}>
+	<FileManager
+		labels={{
+			title: t('files.title'),
+			description: t('files.description'),
+			search: t('files.search'),
+			searchModeName: t('files.searchModeName'),
+			searchModeOcr: t('files.searchModeOcr'),
+			searchPlaceholderOcr: t('files.searchPlaceholderOcr'),
+			searchOcrPendingHint: t('files.searchOcrPendingHint'),
+			searchMatchCount: t('files.searchMatchCount'),
+			filterAll: t('files.filterAll'),
+			filterImage: t('files.filterImage'),
+			filterDocument: t('files.filterDocument'),
+			filterVideo: t('files.filterVideo'),
+			filterAudio: t('files.filterAudio'),
+			tabAll: t('files.tabAll'),
+			empty: t('files.empty'),
+			pageInfo: t('files.pageInfo'),
+			prev: t('files.prev'),
+			next: t('files.next'),
+			copyLink: t('files.copyLink'),
+			delete: t('files.delete'),
+			preview: t('files.preview'),
+			open: t('files.open'),
+			download: t('files.download'),
+			copied: t('files.copied'),
+			deleteConfirm: t('files.deleteConfirm'),
+			bulkDelete: t('files.bulkDelete'),
+			bulkSelected: t('files.bulkSelected'),
+			bulkDeleteConfirm: t('files.bulkDeleteConfirm'),
+			selectAll: t('files.selectAll'),
+			colName: t('files.colName'),
+			colType: t('files.colType'),
+			colCategory: t('files.colCategory'),
+			colExpiry: t('files.colExpiry'),
+			colSize: t('files.colSize'),
+			colUploadedAt: t('files.colUploadedAt'),
+			colActions: t('files.colActions'),
+			typeFile: t('files.typeFile'),
+			categoryImage: t('files.categoryImage'),
+			categoryDocument: t('files.categoryDocument'),
+			categoryOther: t('files.categoryOther'),
+			expiryNone: t('files.expiryNone'),
+			serverOffline: t('files.serverOffline'),
+			previewClose: t('files.previewClose'),
+			previewLoading: t('files.previewLoading'),
+			previewUnsupported: t('files.previewUnsupported'),
+			previewLoadError: t('files.previewLoadError'),
+			previewOpenNew: t('files.previewOpenNew'),
+			searchHitSummary: t('files.searchHitSummary'),
+			confirmCancel: t('files.confirmCancel'),
+			confirmOk: t('files.confirmOk'),
+		}}
+	/>
+</Layout>

@@ -1,0 +1,59 @@
+---
+// 文件说明：钢铁侠主题页主视觉区块，展示标题、简介与反应堆风格装饰。
+import { defaultLang, useTranslations } from '../i18n/ui';
+
+// 计算当前页面语言，若无法获取则回退到默认语言
+const lang = Astro.currentLocale ?? defaultLang;
+// 获取当前语言的翻译函数
+const t = useTranslations(lang);
+---
+
+<section class="ironman-hero">
+	<div class="reactor" aria-hidden="true">
+		<span class="reactor-core"></span>
+		<span class="reactor-ring"></span>
+	</div>
+	<h1>{t('ironman.hello')}</h1>
+	<p class="ironman-intro">{t('ironman.intro')}</p>
+	<p class="ironman-hint">{t('ironman.hint')}</p>
+</section>
+
+<style>
+	.ironman-hero {
+		padding: 1rem 0 2rem;
+		position: relative;
+	}
+	.reactor {
+		width: 72px;
+		height: 72px;
+		margin-bottom: 1.5rem;
+		position: relative;
+	}
+	.reactor-core {
+		position: absolute;
+		inset: 22px;
+		border-radius: 50%;
+		background: radial-gradient(circle, #e8fbff 0%, #00d4ff 45%, #0077aa 100%);
+		box-shadow: 0 0 24px rgba(0, 212, 255, 0.85), 0 0 48px rgba(0, 212, 255, 0.35);
+		animation: pulse 2.4s ease-in-out infinite;
+	}
+	.reactor-ring {
+		position: absolute;
+		inset: 0;
+		border: 3px solid rgba(255, 196, 64, 0.85);
+		border-radius: 50%;
+		box-shadow: 0 0 12px rgba(255, 80, 40, 0.35);
+	}
+	.ironman-intro {
+		font-size: 1.15em;
+		margin-bottom: 0.75em;
+	}
+	.ironman-hint {
+		color: rgb(var(--gray));
+		font-size: 0.95em;
+	}
+	@keyframes pulse {
+		0%, 100% { transform: scale(1); opacity: 1; }
+		50% { transform: scale(1.08); opacity: 0.88; }
+	}
+</style>

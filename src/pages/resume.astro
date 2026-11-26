@@ -1,0 +1,14 @@
+---
+// 文件说明：在线简历页（中文，路由 /resume）。页面内容全部来自 src/data/resume.ts。
+import ResumePage from '../components/resume/ResumePage.astro';
+import { getResume } from '../data/resume';
+import { defaultLang } from '../i18n/ui';
+import ResumeLayout from '../layouts/ResumeLayout.astro';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const resume = getResume(lang);
+---
+
+<ResumeLayout title={resume.meta.title} description={resume.meta.description}>
+	<ResumePage resume={resume} />
+</ResumeLayout>

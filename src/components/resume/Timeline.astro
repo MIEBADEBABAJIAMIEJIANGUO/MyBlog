@@ -1,0 +1,54 @@
+---
+// 文件说明：经历时间轴——工作、实习、外包并行与教育经历，按时间倒序展示。
+import type { Resume } from '../../data/resume';
+
+interface Props {
+	resume: Resume;
+}
+
+const { resume } = Astro.props;
+const parallelLabel = resume.lang === 'zh-CN' ? '在职并行' : 'In parallel';
+---
+
+<section class="rz-section" id="experience">
+	<div class="rz-shell">
+		<div class="rz-reveal">
+			<div class="rz-section-head">
+				<span class="rz-section-num">02</span>
+				<h2 class="rz-section-title">{resume.ui.sections.experience}</h2>
+				<span class="rz-section-sub">Timeline</span>
+			</div>
+		</div>
+
+		<ol class="rz-timeline">
+			{
+				resume.timeline.map((entry, index) => (
+					<li class={`rz-tl-item rz-reveal${entry.kind === 'edu' ? ' rz-tl-item--edu' : ''}`} style={`--rz-delay: ${index * 50}ms`}>
+						<span class="rz-tl-period">{entry.period}</span>
+						<div class="rz-tl-head">
+							<h3 class="rz-tl-title">{entry.title}</h3>
+							<span class="rz-tl-org">{entry.org}</span>
+							{entry.kind === 'parallel' && <span class="rz-tl-badge rz-tl-badge--parallel">{parallelLabel}</span>}
+							{entry.kind === 'intern' && <span class="rz-tl-badge">Intern</span>}
+						</div>
+						<p class="rz-tl-summary">{entry.summary}</p>
+						{entry.bullets.length > 0 && (
+							<ul class="rz-tl-bullets">
+								{entry.bullets.map((bullet) => (
+									<li>{bullet}</li>
+								))}
+							</ul>
+						)}
+						{entry.tags.length > 0 && (
+							<ul class="rz-tags">
+								{entry.tags.map((tag) => (
+									<li class="rz-tag">{tag}</li>
+								))}
+							</ul>
+						)}
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
