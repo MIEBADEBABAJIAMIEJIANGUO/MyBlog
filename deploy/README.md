@@ -16,6 +16,25 @@
 
 ---
 
+## 〇、当前实际形态：纯静态（已在跑）
+
+站点现在只保留简历页，前端不调用任何后端接口，所以**不需要 Node / Mongo / MinIO**，nginx 直接托管 `dist` 即可：
+
+```
+浏览器  ──http://116.62.103.168/──>  nginx  ──>  /var/www/myblog/  （dist 内容直接铺在这里）
+```
+
+后续每次更新简历，一条命令：
+
+```cmd
+deploy\publish-static.cmd 116.62.103.168 -SshKey C:\Users\Administrator\.ssh\my-blog.pem
+```
+
+对应的 nginx 配置是 [nginx-static.conf](nginx-static.conf)（只放静态 + 显式 404，不含 `/api`、`/files` 反代）。
+等以后恢复上传/Agent 页面，再按下面第一～三节上完整栈。
+
+---
+
 ## 一、服务器初始化（只做一次）
 
 ### 1. 安全组
