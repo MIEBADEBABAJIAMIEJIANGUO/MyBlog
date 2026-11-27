@@ -85,10 +85,8 @@ const homeHref = lang === 'en' ? '/en/' : '/';
 			<footer class="rz-footer">
 				<div class="rz-shell rz-footer-inner">
 					<span>{resume.name} · {resume.role}</span>
-					<span>
-						<a href={homeHref}>{ui.back}</a>
-						· {ui.printHint}
-					</span>
+					<!-- 站点当前只保留简历页，首页即简历，故不再放「返回站点」链接 -->
+					<span>{ui.printHint}</span>
 				</div>
 			</footer>
 		</div>

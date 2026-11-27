@@ -1,18 +1,14 @@
 ---
-// 文件说明：网站首页（默认中文路由 /），嵌入智能助手。
-// 原代码注释：HomeHero 介绍页已替换为 AgentBlogShell
-import Layout from '../layouts/Layout.astro';
-import AgentBlogShell from '../components/AgentBlogShell.astro';
-import { agentLabels } from '../scripts/agent/labels';
+// 文件说明：站点首页。当前阶段站点只保留简历页，首页直接渲染简历（其它页面已用 _ 前缀停用）。
+import ResumePage from '../components/resume/ResumePage.astro';
+import { getResume } from '../data/resume';
+import { defaultLang } from '../i18n/ui';
+import ResumeLayout from '../layouts/ResumeLayout.astro';
+
+const lang = Astro.currentLocale ?? defaultLang;
+const resume = getResume(lang);
 ---
 
-<Layout title={agentLabels.title} description={agentLabels.pageDescription}>
-	<AgentBlogShell />
-</Layout>
-
-<!-- 原代码注释：HomeHero 首页
-import HomeHero from '../components/HomeHero.astro';
-<Layout title={t('site.title')} description={t('site.description')}>
-	<HomeHero />
-</Layout>
--->
+<ResumeLayout title={resume.meta.title} description={resume.meta.description}>
+	<ResumePage resume={resume} />
+</ResumeLayout>
