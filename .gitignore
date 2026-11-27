@@ -28,6 +28,10 @@ myblog-artifact.tgz
 dist-static.tgz
 .deploy-stage/
 
+# 简历导出的中间产物
+exports/preview/
+exports/checks.json
+
 # macOS-specific files
 .DS_Store
 
