@@ -1,4 +1,4 @@
-﻿# 文件说明：本地一键构建并发布到轻量服务器(Windows PowerShell)。
+# 文件说明：本地一键构建并发布到轻量服务器(Windows PowerShell)。
 # 用途：2C2G 机器不适合跑 Astro 构建，改在本地构建，只把产物 + 服务端代码传上去。
 #
 # 首次使用前请在服务器上完成：安装 node/docker/nginx、配 swap、建 /opt/myblog/.env、
@@ -12,7 +12,9 @@ param(
 	[Parameter(Mandatory = $true)][string]$ServerIp,
 	[string]$User = 'root',
 	[string]$SshKey = '',
-	[switch]$SkipBuild
+	[switch]$SkipBuild,
+	# 只本地构建打包、不上传，用于验证链路
+	[switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,6 +48,12 @@ tar -czf $artifact -C $stage .
 
 $sizeMb = [math]::Round((Get-Item $artifact).Length / 1MB, 1)
 Write-Host "==> 产物 $artifact(${sizeMb} MB)" -ForegroundColor Green
+
+if ($DryRun) {
+	Write-Host "==> DryRun：跳过上传与远端发布" -ForegroundColor Yellow
+	Remove-Item -Recurse -Force $stage
+	return
+}
 
 $sshArgs = @()
 if ($SshKey) { $sshArgs = @('-i', $SshKey) }

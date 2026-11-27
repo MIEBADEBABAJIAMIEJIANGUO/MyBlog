@@ -88,6 +88,12 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ## 二、日常发布（在本地 Windows 上跑）
 
+```cmd
+deploy\publish.cmd 47.100.xx.xx
+```
+
+`publish.cmd` 会自动用 `-ExecutionPolicy Bypass` 调起脚本，绕开「未签名脚本」的拦截。也可以直接调 PS1（需要先放行执行策略，见文末说明）：
+
 ```powershell
 .\deploy\build-local.ps1 -ServerIp 47.100.xx.xx
 ```
@@ -104,6 +110,30 @@ sudo nginx -t && sudo systemctl reload nginx
 ```powershell
 .\deploy\build-local.ps1 -ServerIp 47.100.xx.xx -User root -SshKey C:\Users\me\.ssh\aliyun.pem
 ```
+
+只构建打包、不上传（验证链路用）：
+
+```powershell
+.\deploy\build-local.ps1 -ServerIp 47.100.xx.xx -SkipBuild -DryRun
+```
+
+### 报「未对文件进行数字签名 / 禁止运行脚本」怎么办
+
+PowerShell 默认执行策略会拦下未签名脚本。三种解法，任选其一：
+
+```powershell
+# 1) 用包装脚本（推荐，不改任何系统设置）
+deploy\publish.cmd 47.100.xx.xx
+
+# 2) 只在当前窗口放行
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+.\deploy\build-local.ps1 -ServerIp 47.100.xx.xx
+
+# 3) 对当前用户长期放行（RemoteSigned：本地脚本可跑，网上下载的仍需签名）
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+> `publish.cmd` 就是用 `-ExecutionPolicy Bypass` 调起 `build-local.ps1`，参数原样透传。
 
 ---
 
@@ -187,3 +217,4 @@ sudo tail -f /var/log/nginx/myblog.error.log
 | `deploy/server.env.example` | 服务器端环境变量模板 |
 | `deploy/deploy.sh` | 服务器端发布脚本 |
 | `deploy/build-local.ps1` | 本地构建 + 上传 + 触发发布 |
+| `deploy/publish.cmd` | 包装脚本：绕过执行策略调起 `build-local.ps1` |
