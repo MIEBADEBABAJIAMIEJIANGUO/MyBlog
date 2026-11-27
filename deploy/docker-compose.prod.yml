@@ -1,0 +1,53 @@
+# 文件说明：生产环境数据库编排（MongoDB + MinIO）。
+# 针对 2C2G 小机器：限制内存、端口只绑 127.0.0.1、强密码从 .env 读取。
+#
+# 启动（在仓库根目录执行）：
+#   docker compose --env-file .env -f deploy/docker-compose.prod.yml up -d
+#
+# 注意：compose 的 --env-file 指向仓库根 .env，其中 MINIO_ACCESS_KEY / MINIO_SECRET_KEY
+# 与容器 root 账号共用，方便应用直接连。
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: myblog-mongo
+    restart: unless-stopped
+    # 只监听本机，绝不暴露公网
+    ports:
+      - '127.0.0.1:27017:27017'
+    # 2G 内存机器：WiredTiger 缓存压到 350MB，避免 OOM
+    command: ['--wiredTigerCacheSizeGB', '0.35']
+    volumes:
+      - mongo_data:/data/db
+    mem_limit: 700m
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  minio:
+    image: minio/minio:latest
+    container_name: myblog-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+      # 控制台关掉浏览器自动打开的行为
+      MINIO_BROWSER: 'on'
+    ports:
+      - '127.0.0.1:9000:9000'
+      - '127.0.0.1:9001:9001'
+    volumes:
+      - minio_data:/data
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+volumes:
+  mongo_data:
+  minio_data:

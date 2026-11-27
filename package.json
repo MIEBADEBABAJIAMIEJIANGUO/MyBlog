@@ -10,6 +10,7 @@
     "dev:server": "nodemon",
     "dev:all": "concurrently -n astro,server -c blue,green \"astro dev --background\" \"npm run dev:server\"",
     "build": "astro build",
+    "start": "node server/index.js",
     "preview": "astro preview",
     "astro": "astro",
     "migrate:files": "node server/scripts/migrate-manifest-to-mongo.js",

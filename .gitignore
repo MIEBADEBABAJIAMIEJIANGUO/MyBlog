@@ -23,6 +23,10 @@ pnpm-debug.log*
 # 临时截图 / 调试产物
 .shots/
 
+# 部署产物（本地构建后生成，不入库）
+myblog-artifact.tgz
+.deploy-stage/
+
 # macOS-specific files
 .DS_Store
 

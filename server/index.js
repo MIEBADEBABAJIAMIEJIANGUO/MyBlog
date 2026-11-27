@@ -22,9 +22,16 @@ const PORT = 3001;
 
 const app = express();
 
+// 允许的跨域来源：生产走 nginx 同源反代时其实用不到；
+// 直连 :3001 调试或独立域名部署时，用 CORS_ORIGINS 覆盖（逗号分隔）。
+const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:4321,http://127.0.0.1:4321')
+	.split(',')
+	.map((origin) => origin.trim())
+	.filter(Boolean);
+
 app.use(
 	cors({
-		origin: ['http://localhost:4321', 'http://127.0.0.1:4321'],
+		origin: allowedOrigins,
 	}),
 );
 app.use(express.json());
